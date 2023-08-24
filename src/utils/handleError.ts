@@ -13,5 +13,7 @@ export const handleError = (error: any) => {
     throw new BadRequestException('Ya existe un registro con los mismos datos');
   }
   logger.error(error);
-  throw new InternalServerErrorException('Ocurrió un error inesperado');
+  throw new InternalServerErrorException(
+    error.message || 'Ocurrió un error inesperado',
+  );
 };

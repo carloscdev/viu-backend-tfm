@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { handleError } from 'src/utils/handleError';
 import { handleSlug } from 'src/utils/handleSlug';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -29,12 +30,16 @@ export class CategoriesService {
     }
   }
 
-  async findAll() {
-    return await this.categoryRepository.find();
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+    return await this.categoryRepository.find({
+      take: limit,
+      skip: offset,
+    });
   }
 
-  async findOneById(category_id: number) {
-    const category = await this.categoryRepository.findOneBy({ category_id });
+  async findOneById(categoryId: number) {
+    const category = await this.categoryRepository.findOneBy({ categoryId });
 
     if (!category) {
       throw new NotFoundException('No se encontró la categoría');
@@ -42,11 +47,24 @@ export class CategoriesService {
     return category;
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return updateCategoryDto;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    try {
+      const title = updateCategoryDto.title;
+      const body = {
+        title,
+        slug: handleSlug(title),
+      };
+      const category = await this.findOneById(id);
+      category.title = body.title;
+      category.slug = body.slug;
+      await this.categoryRepository.save(category);
+      return category;
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   remove(id: number) {
-    return `This action removes a #${id} category`;
+    return `No disponible #${id}`;
   }
 }
