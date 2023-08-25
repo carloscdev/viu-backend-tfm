@@ -2,10 +2,10 @@ import { IsString, MinLength, IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
   @IsString({
-    message: 'El "name" debe ser un texto',
+    message: 'El "nombre" debe ser un texto',
   })
   @MinLength(8, {
-    message: 'El "name" debe tener al menos 8 caracteres',
+    message: 'El "nombre" debe tener al menos 8 caracteres',
   })
   name: string;
 

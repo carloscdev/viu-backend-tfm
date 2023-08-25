@@ -3,7 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -28,6 +28,6 @@ export class Category {
   })
   created_at: Date;
 
-  @OneToOne(() => Document, (document) => document.category)
-  document: Document;
+  @OneToMany(() => Document, (document) => document.user)
+  documents: Document[];
 }

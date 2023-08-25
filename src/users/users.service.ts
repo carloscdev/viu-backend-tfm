@@ -30,7 +30,7 @@ export class UsersService {
         token: this.getJwtToken({ userId: user.userId }),
       };
     } catch (error) {
-      handleError(error);
+      handleError(error, 'Register User');
     }
   }
   async login(loginUserDto: LoginUserDto) {
@@ -68,7 +68,7 @@ export class UsersService {
         token: this.getJwtToken({ userId: user.userId }),
       };
     } catch (error) {
-      handleError(error);
+      handleError(error, 'Login User');
     }
   }
 

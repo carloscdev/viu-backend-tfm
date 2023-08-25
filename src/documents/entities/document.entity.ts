@@ -3,10 +3,10 @@ import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -26,12 +26,17 @@ export class Document {
   @Column()
   categoryId: number;
 
-  @OneToOne(() => Category, (category) => category.document)
+  @ManyToOne(() => Category, (category) => category.documents)
   @JoinColumn({ name: 'categoryId' })
   category: Category;
 
-  @Column('text')
+  @Column('text', {
+    unique: true,
+  })
   title: string;
+
+  @Column('text')
+  slug: string;
 
   @Column('text')
   description: string;

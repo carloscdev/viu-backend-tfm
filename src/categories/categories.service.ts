@@ -26,25 +26,33 @@ export class CategoriesService {
       await this.categoryRepository.save(category);
       return category;
     } catch (error) {
-      handleError(error);
+      handleError(error, 'Create Category');
     }
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginationDto;
-    return await this.categoryRepository.find({
-      take: limit,
-      skip: offset,
-    });
+    try {
+      const { limit = 10, offset = 0 } = paginationDto;
+      return await this.categoryRepository.find({
+        take: limit,
+        skip: offset,
+      });
+    } catch (error) {
+      handleError(error, 'Find All Categories');
+    }
   }
 
   async findOneById(categoryId: number) {
-    const category = await this.categoryRepository.findOneBy({ categoryId });
+    try {
+      const category = await this.categoryRepository.findOneBy({ categoryId });
 
-    if (!category) {
-      throw new NotFoundException('No se encontró la categoría');
+      if (!category) {
+        throw new NotFoundException('No se encontró la categoría');
+      }
+      return category;
+    } catch (error) {
+      handleError(error, 'Find One Category By Id');
     }
-    return category;
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
@@ -60,7 +68,7 @@ export class CategoriesService {
       await this.categoryRepository.save(category);
       return category;
     } catch (error) {
-      handleError(error);
+      handleError(error, 'Update Category');
     }
   }
 

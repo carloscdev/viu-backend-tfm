@@ -10,19 +10,29 @@ import {
 import { DocumentsService } from './documents.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
+import { Auth } from 'src/users/decorators/auth.decorator';
+import { GetUser } from 'src/users/decorators/get-user.decorator';
+import { User } from 'src/users/entities/user.entity';
 
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
   @Post()
-  create(@Body() createDocumentDto: CreateDocumentDto) {
-    return this.documentsService.create(createDocumentDto);
+  @Auth()
+  create(@GetUser() user: User, @Body() createDocumentDto: CreateDocumentDto) {
+    return this.documentsService.create(user, createDocumentDto);
   }
 
-  @Get()
-  findAll() {
-    return this.documentsService.findAll();
+  @Get('/')
+  @Auth()
+  findAllByUser(@GetUser() user: User) {
+    return this.documentsService.findAllByUser(user);
+  }
+
+  @Get('/public')
+  findAllPublic() {
+    return this.documentsService.findAllPublic();
   }
 
   @Get(':id')
