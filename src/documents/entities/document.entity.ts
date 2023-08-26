@@ -1,12 +1,13 @@
 import { Category } from 'src/categories/entities/category.entity';
+import { Item } from 'src/items/entities/item.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -56,4 +57,7 @@ export class Document {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Item, (item) => item.document)
+  items: Item[];
 }

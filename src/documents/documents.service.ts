@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { User } from 'src/users/entities/user.entity';
@@ -7,12 +7,15 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Document } from './entities/document.entity';
 import { handleError } from 'src/utils/handleError';
+import { Item } from 'src/items/entities/item.entity';
 
 @Injectable()
 export class DocumentsService {
   constructor(
     @InjectRepository(Document)
     private readonly documentRepository: Repository<Document>,
+    @InjectRepository(Item)
+    private readonly itemRepository: Repository<Item>,
   ) {}
 
   async create(user: User, createDocumentDto: CreateDocumentDto) {
@@ -34,9 +37,9 @@ export class DocumentsService {
     }
   }
 
-  findAllByUser(user: User) {
+  async findAllByUser(user: User) {
     try {
-      return this.documentRepository.find({
+      return await this.documentRepository.find({
         relations: ['category'],
         where: {
           userId: user.userId,
@@ -51,9 +54,9 @@ export class DocumentsService {
     }
   }
 
-  findAllPublic() {
+  async findAllPublic() {
     try {
-      return this.documentRepository.find({
+      return await this.documentRepository.find({
         relations: ['category', 'user'],
         where: {
           isDeleted: false,
@@ -68,15 +71,92 @@ export class DocumentsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} document`;
+  async findOneById(documentId: number, user) {
+    try {
+      const { userId } = user;
+      const document = await this.documentRepository.findOneBy({
+        documentId,
+        userId,
+        isDeleted: false,
+      });
+      if (!document) {
+        throw new NotFoundException(
+          `No se encontró el documento con ID: ${documentId}`,
+        );
+      }
+      return document;
+    } catch (error) {
+      handleError(error, 'Find One Document By Id');
+    }
   }
 
-  update(id: number, updateDocumentDto: UpdateDocumentDto) {
-    return `This action updates a #${id} document`;
+  async findOneBySlugPublic(slug: string) {
+    try {
+      const document = await this.documentRepository.find({
+        relations: ['category', 'user'],
+        where: {
+          slug,
+          isDeleted: false,
+          isPublished: true,
+        },
+      });
+      if (document.length === 0) {
+        throw new NotFoundException(`No se encontró el documento`);
+      }
+
+      const items = await this.itemRepository.find({
+        where: {
+          documentId: document[0].documentId,
+        },
+        order: {
+          position: 'ASC',
+        },
+      });
+
+      return {
+        document: document[0],
+        items,
+      };
+    } catch (error) {
+      handleError(error, 'Find One Document By Slug');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} document`;
+  async update(
+    documentId: number,
+    user: User,
+    updateDocumentDto: UpdateDocumentDto,
+  ) {
+    try {
+      const { categoryId, title, description, isPublished } = updateDocumentDto;
+      const document = await this.findOneById(documentId, user);
+      document.categoryId = categoryId;
+      document.title = title;
+      document.slug = handleSlug(title);
+      document.description = description;
+      document.isPublished = isPublished;
+
+      await this.documentRepository.save(document);
+      return document;
+    } catch (error) {
+      handleError(error, 'Update Document');
+    }
+  }
+
+  async remove(documentId: number, user: User) {
+    try {
+      const today = new Date();
+      const document = await this.findOneById(documentId, user);
+      document.isPublished = false;
+      document.isDeleted = true;
+      document.title += today;
+      await this.documentRepository.save(document);
+      return {
+        statusCode: 200,
+        message: 'Documento eliminado',
+      };
+    } catch (error) {
+      handleError(error, 'Remove Document');
+    }
   }
 }

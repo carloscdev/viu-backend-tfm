@@ -36,20 +36,29 @@ export class DocumentsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.documentsService.findOne(+id);
+  @Auth()
+  findOneById(@GetUser() user: User, @Param('id') id: string) {
+    return this.documentsService.findOneById(+id, user);
+  }
+
+  @Get('/public/:slug')
+  findOneBySlugPublic(@Param('slug') slug: string) {
+    return this.documentsService.findOneBySlugPublic(slug);
   }
 
   @Patch(':id')
+  @Auth()
   update(
+    @GetUser() user: User,
     @Param('id') id: string,
     @Body() updateDocumentDto: UpdateDocumentDto,
   ) {
-    return this.documentsService.update(+id, updateDocumentDto);
+    return this.documentsService.update(+id, user, updateDocumentDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.documentsService.remove(+id);
+  @Auth()
+  remove(@GetUser() user: User, @Param('id') id: string) {
+    return this.documentsService.remove(+id, user);
   }
 }
