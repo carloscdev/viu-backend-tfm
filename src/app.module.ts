@@ -5,6 +5,8 @@ import { CategoriesModule } from './categories/categories.module';
 import { UsersModule } from './users/users.module';
 import { DocumentsModule } from './documents/documents.module';
 import { ItemsModule } from './items/items.module';
+import { CommentsModule } from './comments/comments.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { ItemsModule } from './items/items.module';
     UsersModule,
     DocumentsModule,
     ItemsModule,
+    CommentsModule,
+    FavoritesModule,
   ],
 })
 export class AppModule {}

@@ -1,4 +1,6 @@
 import { Category } from 'src/categories/entities/category.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
+import { Favorite } from 'src/favorites/entities/favorite.entity';
 import { Item } from 'src/items/entities/item.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -60,4 +62,10 @@ export class Document {
 
   @OneToMany(() => Item, (item) => item.document)
   items: Item[];
+
+  @OneToMany(() => Comment, (comment) => comment.document)
+  comments: Comment[];
+
+  @OneToMany(() => Favorite, (favorite) => favorite.document)
+  favorites: Favorite[];
 }

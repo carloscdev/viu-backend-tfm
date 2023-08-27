@@ -13,12 +13,12 @@ export class CreateDocumentDto {
     message: 'El "título" debe ser un texto',
   })
   @MaxLength(50, {
-    message: 'El "título" debe tener menos de 50 caracteres',
+    message: 'El "title" debe tener menos de 50 caracteres',
   })
   title: string;
 
   @IsString({
-    message: 'La "descripción" debe ser un texto',
+    message: 'La "description" debe ser un texto',
   })
   @MaxLength(100, {
     message: 'La "descripción" debe tener menos de 100 caracteres',

@@ -8,6 +8,8 @@ import {
 import { UserRole } from '../interfaces/user.interface';
 import { encryptPassword } from 'src/utils/handleBcrypt';
 import { Document } from 'src/documents/entities/document.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
+import { Favorite } from 'src/favorites/entities/favorite.entity';
 
 @Entity('users')
 export class User {
@@ -45,6 +47,12 @@ export class User {
 
   @OneToMany(() => Document, (document) => document.user)
   documents: Document[];
+
+  @OneToMany(() => Comment, (document) => document.user)
+  comments: Comment[];
+
+  @OneToMany(() => Favorite, (favorite) => favorite.user)
+  favorites: Favorite[];
 
   @BeforeInsert()
   async hashPassword() {

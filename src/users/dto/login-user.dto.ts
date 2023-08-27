@@ -1,9 +1,16 @@
 import { IsString, IsEmail } from 'class-validator';
 
 export class LoginUserDto {
-  @IsEmail()
+  @IsEmail(
+    {},
+    {
+      message: 'El "email" debe ser un correo electrónico válido',
+    },
+  )
   email: string;
 
-  @IsString()
+  @IsString({
+    message: 'El "password" debe ser un texto',
+  })
   password: string;
 }
