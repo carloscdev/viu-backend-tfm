@@ -13,6 +13,7 @@ import { comparePassword, encryptPassword } from 'src/utils/handleBcrypt';
 import { JwtPayload } from './interfaces/jwt.interface';
 import { JwtService } from '@nestjs/jwt';
 import { UpdatePasswordDto, UpdateProfileDto } from './dto/update-user.dto';
+import { MailsService } from 'src/mails/mails.service';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +21,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailsService,
   ) {}
 
   async register(createUserDto: CreateUserDto) {
@@ -104,6 +106,10 @@ export class UsersService {
       profile.name = name;
       profile.email = email;
       await this.userRepository.save(profile);
+      this.mailService.sendMailUpdate(
+        user,
+        'Tu perfil ha sido actualizado correctamente.',
+      );
       return profile;
     } catch (error) {
       handleError(error, 'Update Profile');
@@ -140,6 +146,10 @@ export class UsersService {
       const updateUser = await this.userRepository.findOneBy({ userId });
       updateUser.password = await encryptPassword(newPassword);
       await this.userRepository.save(updateUser);
+      this.mailService.sendMailUpdate(
+        user,
+        'Tu contraseña ha sido actualizado correctamente.',
+      );
       return {
         statusCode: 200,
         message: 'Contraseña actualizada correctamente',

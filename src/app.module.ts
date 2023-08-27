@@ -7,10 +7,13 @@ import { DocumentsModule } from './documents/documents.module';
 import { ItemsModule } from './items/items.module';
 import { CommentsModule } from './comments/comments.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { MailsModule } from './mails/mails.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -27,6 +30,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     ItemsModule,
     CommentsModule,
     FavoritesModule,
+    MailsModule,
   ],
 })
 export class AppModule {}

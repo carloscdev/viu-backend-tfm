@@ -8,11 +8,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { Favorite } from 'src/favorites/entities/favorite.entity';
+import { MailsModule } from 'src/mails/mails.module';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService, JwtStrategy],
   imports: [
+    MailsModule,
     TypeOrmModule.forFeature([User, Comment, Favorite]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({

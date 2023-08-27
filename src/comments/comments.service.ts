@@ -5,12 +5,17 @@ import { handleError } from 'src/utils/handleError';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
 import { Repository } from 'typeorm';
+import { MailsService } from 'src/mails/mails.service';
+import { Document } from 'src/documents/entities/document.entity';
 
 @Injectable()
 export class CommentsService {
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+    private readonly mailService: MailsService,
+    @InjectRepository(Document)
+    private readonly documentRepository: Repository<Document>,
   ) {}
 
   async create(user: User, createCommentDto: CreateCommentDto) {
@@ -23,6 +28,19 @@ export class CommentsService {
       };
       const comment = this.commentRepository.create(body);
       await this.commentRepository.save(comment);
+
+      const document = await this.documentRepository.find({
+        relations: ['user'],
+        where: {
+          documentId,
+        },
+      });
+      this.mailService.sendMailUpdate(
+        document[0].user,
+        `Se ha publicado un nuevo comentario en tu documento "${document[0].title}." \n
+        Comentario: ${content} \n \n
+        https://viu-hub.carlosc.dev/documents/${document[0].slug}`,
+      );
       return comment;
     } catch (error) {
       handleError(error, 'Create Comment');

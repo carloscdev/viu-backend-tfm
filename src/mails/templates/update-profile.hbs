@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Profile</title>
+  <style>
+    main {
+      display: flex;
+      flex-direction: column;
+      background-color: #1f1f1f;
+      padding: 5rem;
+      width: 500px;
+      margin: 0 auto;
+    }
+    .container {
+      width: 480px;
+      margin: 0 auto;
+      background-color: #1f1f1f;
+      color: #fff;
+    }
+    h1 {
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div>
+      <img src="https://i.postimg.cc/sXs4cR66/logo.png" width="100"></img>
+    </div>
+    <hr style="width: 100%" />
+    <h2>Hola {{ name }}</h2>
+    <p>
+      {{ content }}
+    </p>
+  </main>
+</body>
+</html>
