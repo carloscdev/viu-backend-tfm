@@ -19,6 +19,13 @@ export class CommentsController {
   findAllByDocumentPublic(@Param('documentId') documentId: string) {
     return this.commentsService.findAllByDocumentPublic(+documentId);
   }
+
+  @Get('/total')
+  @Auth()
+  findTotalByUser(@GetUser() user: User) {
+    return this.commentsService.findTotalByUser(user);
+  }
+
   @Delete(':id')
   @Auth()
   remove(@GetUser() user: User, @Param('id') id: string) {

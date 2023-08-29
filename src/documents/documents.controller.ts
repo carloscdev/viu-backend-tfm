@@ -30,9 +30,21 @@ export class DocumentsController {
     return this.documentsService.findAllByUser(user);
   }
 
+  @Get('/recent')
+  @Auth()
+  findRecent() {
+    return this.documentsService.findRecent();
+  }
+
   @Get('/public')
   findAllPublic() {
     return this.documentsService.findAllPublic();
+  }
+
+  @Get('/total')
+  @Auth()
+  findTotalByUser(@GetUser() user: User) {
+    return this.documentsService.findTotalByUser(user);
   }
 
   @Get(':id')

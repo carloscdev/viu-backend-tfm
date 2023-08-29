@@ -56,17 +56,17 @@ export class UsersService {
       });
 
       if (!user || !(await comparePassword(password, user.password))) {
-        throw new UnauthorizedException('Credenciales no válidas');
+        throw new BadRequestException('Credenciales no válidas');
       }
 
       if (!user.isActive) {
-        throw new UnauthorizedException(
+        throw new BadRequestException(
           'Usuario inactivo, contacte con el administrador',
         );
       }
 
       if (user.isDeleted) {
-        throw new UnauthorizedException('Usuario eliminado');
+        throw new BadRequestException('Usuario eliminado');
       }
 
       delete user['password'];

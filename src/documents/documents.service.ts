@@ -71,6 +71,37 @@ export class DocumentsService {
     }
   }
 
+  async findRecent() {
+    try {
+      const documents = await this.documentRepository.find({
+        relations: ['category', 'user'],
+        where: {
+          isDeleted: false,
+          isPublished: true,
+        },
+        order: {
+          createdAt: 'DESC',
+        },
+        take: 5,
+      });
+      return documents;
+    } catch (error) {
+      handleError(error, 'Find Recent Documents');
+    }
+  }
+
+  async findTotalByUser(user: User) {
+    try {
+      const documents = await this.findAllByUser(user);
+      return {
+        statusCode: 200,
+        total: documents.length,
+      };
+    } catch (error) {
+      handleError(error, 'Find All Documents');
+    }
+  }
+
   async findOneById(documentId: number, user) {
     try {
       const { userId } = user;

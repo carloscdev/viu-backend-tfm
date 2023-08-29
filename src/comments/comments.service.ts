@@ -47,6 +47,20 @@ export class CommentsService {
     }
   }
 
+  async findTotalByUser(user: User) {
+    try {
+      const comments = await this.commentRepository.find({
+        where: { userId: user.userId },
+      });
+      return {
+        statusCode: 200,
+        total: comments.length,
+      };
+    } catch (error) {
+      handleError(error, 'Find Total Comments By User');
+    }
+  }
+
   async findAllByDocumentPublic(documentId: number) {
     try {
       return await this.commentRepository.find({

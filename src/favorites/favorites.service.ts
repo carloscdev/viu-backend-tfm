@@ -19,7 +19,7 @@ export class FavoritesService {
       if (await this.findOne(user, documentId)) {
         throw new BadRequestException('Ya se encuentra en favoritos');
       }
-      const favorite = await this.favoriteRepository.create({
+      const favorite = this.favoriteRepository.create({
         documentId,
         userId: user.userId,
       });
@@ -69,6 +69,18 @@ export class FavoritesService {
       return favorites;
     } catch (error) {
       handleError(error, 'Find All Favorites');
+    }
+  }
+
+  async findTotalByUser(user: User) {
+    try {
+      const favorites = await this.findAllByUser(user);
+      return {
+        statusCode: 200,
+        total: favorites.length,
+      };
+    } catch (error) {
+      handleError(error, 'Find Total Favorites');
     }
   }
 

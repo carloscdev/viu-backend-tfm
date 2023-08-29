@@ -21,6 +21,12 @@ export class FavoritesController {
     return this.favoritesService.findAllByUser(user);
   }
 
+  @Get('/total')
+  @Auth()
+  findTotalByUser(@GetUser() user: User) {
+    return this.favoritesService.findTotalByUser(user);
+  }
+
   @Get('validate/:documentId')
   @Auth()
   validate(@GetUser() user: User, @Param('documentId') documentId: string) {
