@@ -92,7 +92,13 @@ export class DocumentsService {
 
   async findTotalByUser(user: User) {
     try {
-      const documents = await this.findAllByUser(user);
+      const documents = await this.documentRepository.find({
+        where: {
+          userId: user.userId,
+          isPublished: true,
+          isDeleted: false,
+        },
+      });
       return {
         statusCode: 200,
         total: documents.length,

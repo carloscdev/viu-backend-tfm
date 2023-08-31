@@ -50,7 +50,8 @@ export class CommentsService {
   async findTotalByUser(user: User) {
     try {
       const comments = await this.commentRepository.find({
-        where: { userId: user.userId },
+        relations: ['document'],
+        where: { document: { userId: user.userId } },
       });
       return {
         statusCode: 200,

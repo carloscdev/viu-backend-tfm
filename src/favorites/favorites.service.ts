@@ -61,9 +61,13 @@ export class FavoritesService {
   async findAllByUser(user: User) {
     try {
       const favorites = await this.favoriteRepository.find({
-        relations: ['document', 'user'],
+        relations: ['document', 'user', 'document.category'],
         where: {
           userId: user.userId,
+          document: {
+            isPublished: true,
+            isDeleted: false,
+          },
         },
       });
       return favorites;
