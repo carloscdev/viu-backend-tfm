@@ -65,11 +65,12 @@ export class CommentsService {
   async findAllByDocumentPublic(documentId: number) {
     try {
       return await this.commentRepository.find({
+        relations: ['user'],
         where: {
           documentId,
         },
         order: {
-          createdAt: 'ASC',
+          createdAt: 'DESC',
         },
       });
     } catch (error) {
