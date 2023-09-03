@@ -30,6 +30,11 @@ export class CategoriesController {
     return this.categoriesService.findAll(paginationDto);
   }
 
+  @Get('/public')
+  findAllPublic() {
+    return this.categoriesService.findAllPublic();
+  }
+
   @Get(':id')
   @Auth()
   findOneById(@Param('id') id: string) {

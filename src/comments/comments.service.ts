@@ -81,7 +81,6 @@ export class CommentsService {
   async remove(commentId: number, user: User) {
     try {
       const comment = await this.commentRepository.findOneBy({ commentId });
-      console.log(comment);
       if (!comment || comment.userId !== user.userId) {
         throw new NotFoundException('No se encontró el comentario');
       }

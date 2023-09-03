@@ -63,7 +63,7 @@ export class DocumentsService {
           isPublished: true,
         },
         order: {
-          createdAt: 'DESC',
+          updatedAt: 'DESC',
         },
       });
     } catch (error) {
@@ -80,7 +80,7 @@ export class DocumentsService {
           isPublished: true,
         },
         order: {
-          createdAt: 'DESC',
+          updatedAt: 'DESC',
         },
         take: 5,
       });

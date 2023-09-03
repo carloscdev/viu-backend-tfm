@@ -52,6 +52,7 @@ export class FavoritesService {
       return {
         statusCode: 200,
         message: 'Se encuentra en favoritos',
+        favorite: true,
       };
     } catch (error) {
       handleError(error, 'Validate Favorite');
@@ -88,18 +89,18 @@ export class FavoritesService {
     }
   }
 
-  async remove(favoriteId: number, user: User) {
+  async remove(documentId: number, user: User) {
     try {
       const favorite = await this.favoriteRepository.findOne({
         where: {
-          favoriteId,
+          documentId,
           userId: user.userId,
         },
       });
       if (!favorite) {
         throw new BadRequestException('No se pudo eliminar');
       }
-      await this.favoriteRepository.delete({ favoriteId });
+      await this.favoriteRepository.delete({ favoriteId: favorite.favoriteId });
       return {
         statusCode: 200,
         message: 'Se eliminó de favoritos',

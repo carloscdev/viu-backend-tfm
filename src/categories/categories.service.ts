@@ -42,6 +42,18 @@ export class CategoriesService {
     }
   }
 
+  async findAllPublic() {
+    try {
+      return await this.categoryRepository.find({
+        order: {
+          title: 'ASC',
+        },
+      });
+    } catch (error) {
+      handleError(error, 'Find All Categories');
+    }
+  }
+
   async findOneById(categoryId: number) {
     try {
       const category = await this.categoryRepository.findOneBy({ categoryId });
