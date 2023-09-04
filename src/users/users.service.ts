@@ -14,6 +14,7 @@ import { JwtPayload } from './interfaces/jwt.interface';
 import { JwtService } from '@nestjs/jwt';
 import { UpdatePasswordDto, UpdateProfileDto } from './dto/update-user.dto';
 import { MailsService } from 'src/mails/mails.service';
+import { UserRole } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
@@ -80,6 +81,22 @@ export class UsersService {
     }
   }
 
+  async getUsers() {
+    try {
+      const users = await this.userRepository.find({
+        where: {
+          isDeleted: false,
+        },
+        order: {
+          userId: 'DESC',
+        },
+      });
+      return users;
+    } catch (error) {
+      handleError(error, 'Get Users');
+    }
+  }
+
   async getProfile(user: User) {
     try {
       const profile = await this.userRepository.findOne({
@@ -113,6 +130,39 @@ export class UsersService {
       return profile;
     } catch (error) {
       handleError(error, 'Update Profile');
+    }
+  }
+
+  async activeUser(userId: number, body: { isActive: boolean }) {
+    try {
+      const { isActive } = body;
+      const user = await this.userRepository.findOneBy({ userId });
+      if (!user) {
+        throw new UnauthorizedException('Usuario no encontrado');
+      }
+      console.log(user.isActive, isActive);
+      user.isActive = isActive;
+      await this.userRepository.save(user);
+      this.mailService.sendMailUpdate(user, 'Tu cuenta ha sido actualizada.');
+      return user;
+    } catch (error) {
+      handleError(error, 'Active User');
+    }
+  }
+
+  async updateRolUser(userId: number, body: { role: UserRole }) {
+    try {
+      const { role } = body;
+      const user = await this.userRepository.findOneBy({ userId });
+      if (!user) {
+        throw new UnauthorizedException('Usuario no encontrado');
+      }
+      user.role = role;
+      await this.userRepository.save(user);
+      this.mailService.sendMailUpdate(user, 'Tu rol ha sido actualizado.');
+      return user;
+    } catch (error) {
+      handleError(error, 'Update Rol User');
     }
   }
 

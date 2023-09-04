@@ -36,6 +36,9 @@ export class CategoriesService {
       return await this.categoryRepository.find({
         take: limit,
         skip: offset,
+        order: {
+          created_at: 'DESC',
+        },
       });
     } catch (error) {
       handleError(error, 'Find All Categories');

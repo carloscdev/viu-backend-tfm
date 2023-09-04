@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Get, Patch, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -32,6 +32,12 @@ export class UsersController {
     };
   }
 
+  @Get('/')
+  @Auth(UserRole.ADMIN)
+  getUsers() {
+    return this.usersService.getUsers();
+  }
+
   @Get('/profile')
   @Auth()
   getProfile(@GetUser() user: User) {
@@ -42,6 +48,18 @@ export class UsersController {
   @Auth()
   updateProfile(@GetUser() user: User, @Body() body: UpdateProfileDto) {
     return this.usersService.updateProfile(user, body);
+  }
+
+  @Patch('/active/:id')
+  @Auth()
+  activeUser(@Param('id') id: string, @Body() body: { isActive: boolean }) {
+    return this.usersService.activeUser(+id, body);
+  }
+
+  @Patch('/role/:id')
+  @Auth()
+  updateRolUser(@Param('id') id: string, @Body() body: { role: UserRole }) {
+    return this.usersService.updateRolUser(+id, body);
   }
 
   @Patch('/password')

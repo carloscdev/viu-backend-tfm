@@ -13,13 +13,14 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { Auth } from 'src/users/decorators/auth.decorator';
+import { UserRole } from 'src/users/interfaces/user.interface';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  @Auth()
+  @Auth(UserRole.ADMIN)
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
@@ -42,7 +43,7 @@ export class CategoriesController {
   }
 
   @Patch(':id')
-  @Auth()
+  @Auth(UserRole.ADMIN)
   update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -51,7 +52,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
-  @Auth()
+  @Auth(UserRole.ADMIN)
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(+id);
   }
