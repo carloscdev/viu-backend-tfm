@@ -4,6 +4,7 @@
 
 # enviroment variables
 .env
+.env.prod
 yarn.lock
 # database docker
 postgres/
