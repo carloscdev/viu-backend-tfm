@@ -10,14 +10,14 @@ export class CreateItemDto {
   documentId: number;
 
   @IsString({
-    message: 'El "content" debe ser un texto',
+    message: 'El "contenido" debe ser un texto',
   })
   content: string;
 
   @IsNumber(
     {},
     {
-      message: 'La "position" debe ser un número',
+      message: 'La "posición" debe ser un número',
     },
   )
   position: number;

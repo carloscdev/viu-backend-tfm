@@ -22,6 +22,11 @@ export class UsersController {
     return this.usersService.login(loginUserDto);
   }
 
+  @Post('/recovery-password')
+  recoveryPassword(@Body() body: { email: string }) {
+    return this.usersService.recoveryPassword(body);
+  }
+
   @Get('/test')
   @Auth(UserRole.ADMIN)
   testingPrivateRoute(@GetUser('userId') user: User) {

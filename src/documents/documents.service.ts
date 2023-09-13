@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Document } from './entities/document.entity';
 import { handleError } from 'src/utils/handleError';
 import { Item } from 'src/items/entities/item.entity';
+import { File } from 'src/files/entities/file.entity';
 
 @Injectable()
 export class DocumentsService {
@@ -16,6 +17,8 @@ export class DocumentsService {
     private readonly documentRepository: Repository<Document>,
     @InjectRepository(Item)
     private readonly itemRepository: Repository<Item>,
+    @InjectRepository(File)
+    private readonly fileRepository: Repository<File>,
   ) {}
 
   async create(user: User, createDocumentDto: CreateDocumentDto) {
@@ -150,9 +153,19 @@ export class DocumentsService {
         },
       });
 
+      const files = await this.fileRepository.find({
+        where: {
+          documentId: document[0].documentId,
+        },
+        order: {
+          name: 'ASC',
+        },
+      });
+
       return {
         document: document[0],
         items,
+        files,
       };
     } catch (error) {
       handleError(error, 'Find One Document By Slug');

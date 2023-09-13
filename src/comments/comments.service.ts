@@ -38,8 +38,8 @@ export class CommentsService {
       this.mailService.sendMailUpdate(
         document[0].user,
         `Se ha publicado un nuevo comentario en tu documento "${document[0].title}." \n
-        Comentario: ${content} \n \n
-        https://viu-hub.carlosc.dev/documents/${document[0].slug}`,
+        Comentario: ${content}`,
+        `https://viu-hub.carlosc.dev/publico/${document[0].slug}`,
       );
       return comment;
     } catch (error) {

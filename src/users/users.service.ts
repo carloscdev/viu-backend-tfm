@@ -81,6 +81,32 @@ export class UsersService {
     }
   }
 
+  async recoveryPassword(body: { email: string }) {
+    try {
+      const { email } = body;
+      const user = await this.userRepository.findOneBy({ email });
+      if (!user) {
+        throw new BadRequestException(
+          'Usuario no encontrado, comunícate con el administrador',
+        );
+      }
+      const newPassword = this.generateRandomPassword();
+      user.password = await encryptPassword(newPassword);
+      await this.userRepository.save(user);
+      this.mailService.sendMailUpdate(
+        user,
+        `Tu nueva contraseña es: ${newPassword}`,
+        'https://viu-hub.carlosc.dev/usuario/inicio-sesion',
+      );
+      return {
+        statusCode: 200,
+        message: 'Se ha enviado un correo con tu nueva contraseña',
+      };
+    } catch (error) {
+      handleError(error, 'Recovery Password');
+    }
+  }
+
   async getUsers() {
     try {
       const users = await this.userRepository.find({
@@ -212,5 +238,20 @@ export class UsersService {
   private getJwtToken(payload: JwtPayload) {
     const token = this.jwtService.sign(payload);
     return token;
+  }
+
+  private generateRandomPassword() {
+    const dictionary =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+    let password = '';
+
+    for (let i = 0; i < 8; i++) {
+      const randomCharacter = dictionary.charAt(
+        Math.floor(Math.random() * dictionary.length),
+      );
+      password += randomCharacter;
+    }
+
+    return password;
   }
 }
