@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-// import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 
 import { CloudinaryResponse } from './files.response';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,8 +21,7 @@ export class FilesService {
         documentId,
         name: name,
       });
-      // const currentFile = await this.uploadFile(file, name);
-      const currentFile = { url: 'https://viu-hub.carlosc.dev' };
+      const currentFile = await this.uploadFile(file, name);
       const { url } = currentFile;
       response.url = url;
       await this.fileRepository.save(response);
@@ -76,30 +75,30 @@ export class FilesService {
     }
   }
 
-  // uploadFile(
-  //   file: Express.Multer.File,
-  //   name: string,
-  // ): Promise<CloudinaryResponse> {
-  //   return new Promise((resolve, reject) => {
-  //     cloudinary.uploader
-  //       .upload_stream(
-  //         {
-  //           resource_type: 'auto',
-  //           folder: 'viu-tfm',
-  //           public_id:
-  //             `${name.replace(/\s/g, '-')}-${new Date()
-  //               .toLocaleDateString('en-GB')
-  //               .replace(/\//g, '-')}-` + file.originalname,
-  //         },
-  //         (error, result) => {
-  //           if (error) {
-  //             console.log('ERRORRRR', error);
-  //             return reject(error);
-  //           }
-  //           resolve(result);
-  //         },
-  //       )
-  //       .end(file.buffer);
-  //   });
-  // }
+  uploadFile(
+    file: Express.Multer.File,
+    name: string,
+  ): Promise<CloudinaryResponse> {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          {
+            resource_type: 'auto',
+            folder: 'viu-tfm',
+            public_id:
+              `${name.replace(/\s/g, '-')}-${new Date()
+                .toLocaleDateString('en-GB')
+                .replace(/\//g, '-')}-` + file.originalname,
+          },
+          (error, result) => {
+            if (error) {
+              console.log('ERRORRRR', error);
+              return reject(error);
+            }
+            resolve(result);
+          },
+        )
+        .end(file.buffer);
+    });
+  }
 }
