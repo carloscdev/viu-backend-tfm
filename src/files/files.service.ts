@@ -86,9 +86,9 @@ export class FilesService {
             resource_type: 'auto',
             folder: 'viu-tfm',
             public_id:
-              `${name.replaceAll(' ', '-')}-${new Date()
+              `${name.replace(/\s/g, '-')}-${new Date()
                 .toLocaleDateString('en-GB')
-                .replaceAll('/', '-')}-` + file.originalname,
+                .replace(/\//g, '-')}-` + file.originalname,
           },
           (error, result) => {
             if (error) {
