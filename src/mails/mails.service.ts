@@ -7,7 +7,7 @@ import { handleError } from 'src/utils/handleError';
 export class MailsService {
   constructor(private mailerService: MailerService) {}
 
-  async sendMailUpdate(user: User, content: string) {
+  async sendMailUpdate(user: User, content: string, url: string = null) {
     try {
       const { email, name } = user;
       await this.mailerService.sendMail({
@@ -18,6 +18,7 @@ export class MailsService {
         context: {
           name,
           content,
+          url: url || 'https://viu-hub.carlosc.dev',
         },
       });
     } catch (error) {
